@@ -1,1 +1,111 @@
-<h1>TEST</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Fill-Up Clock</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+        }
+        
+        .clock-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+        
+        .clock-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .fill-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: white;
+        }
+        
+        .fill-wedge {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #4facfe 0deg,
+                #00f2fe var(--fill-angle, 0deg),
+                transparent var(--fill-angle, 0deg)
+            );
+        }
+        
+        .hour-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 280px;
+            font-weight: bold;
+            color: #333;
+            z-index: 10;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <div class="clock-circle"></div>
+        <div class="fill-circle">
+            <div class="fill-wedge" id="fillWedge"></div>
+        </div>
+        <div class="hour-display" id="hour">12</div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            
+            // Convert to 12-hour format
+            if (hours === 0) {
+                hours = 12;
+            } else if (hours > 12) {
+                hours = hours - 12;
+            }
+            
+            // Calculate fill angle (0-360 degrees)
+            const fillAngle = (minutes / 60) * 360;
+            
+            // Update the display
+            document.getElementById('hour').textContent = hours;
+            
+            // Update the conic gradient
+            const fillWedge = document.getElementById('fillWedge');
+            fillWedge.style.background = `conic-gradient(
+                from 0deg,
+                #4facfe 0deg,
+                #00f2fe ${fillAngle}deg,
+                transparent ${fillAngle}deg
+            )`;
+        }
+        
+        // Update immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
